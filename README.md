@@ -1,6 +1,8 @@
 # weather-api
 
-An REST API to check the current weather.
+[![Build Status](https://travis-ci.org/robertoduessmann/weather-api.svg?branch=master)](https://travis-ci.org/robertoduessmann/weather-api)
+
+> An REST API to check the current weather.
 
 ## Build
 ```sh
