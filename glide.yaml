@@ -1,0 +1,6 @@
+package: github.com/robertoduessmann/weather-api
+import:
+- package: github.com/PuerkitoBio/goquery
+  version: v1.1.0
+- package: github.com/gorilla/mux
+  version: v1.4.0
