@@ -2,7 +2,11 @@
 
 [![Build Status](https://travis-ci.org/robertoduessmann/weather-api.svg?branch=master)](https://travis-ci.org/robertoduessmann/weather-api)
 
-> An REST API to check the current weather.
+> A REST API to check the current weather.
+
+> https://goweather.herokuapp.com/weather/Curitiba
+https://goweather.herokuapp.com/weather/SaoPaulo
+https://goweather.herokuapp.com/weather/{city}
 
 ## Build
 ```sh
