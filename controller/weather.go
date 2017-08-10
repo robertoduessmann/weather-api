@@ -44,8 +44,8 @@ func parse(resp *http.Response, weather *model.Weather) {
 		log.Fatal(err)
 	}
 
-	weather.Temperature = parseTemperature(doc)
-	weather.Wind = parseWind(doc)
+	weather.Temperature = parseTemperature(doc) + " °C"
+	weather.Wind = parseWind(doc) + " km/h"
 }
 
 func parseTemperature(doc *goquery.Document) string {
