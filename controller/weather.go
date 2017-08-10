@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
@@ -42,12 +43,37 @@ func parse(resp *http.Response, weather *model.Weather) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	weather.Temperature = parseTemperature(doc)
+	weather.Wind = parseWind(doc)
+}
+
+func parseTemperature(doc *goquery.Document) string {
+	var temperature string
 	doc.Find("body > pre > span:nth-child(3)").Each(func(i int, s *goquery.Selection) {
-		weather.Temperature = s.Text()
+		if !strings.Contains(s.Text(), "_ - _") {
+			temperature = s.Text()
+		} else {
+			doc.Find("body > pre > span:nth-child(2)").Each(func(i int, s *goquery.Selection) {
+				temperature = s.Text()
+			})
+		}
 	})
+	return temperature
+}
+
+func parseWind(doc *goquery.Document) string {
+	var wind string
 	doc.Find("body > pre > span:nth-child(6)").Each(func(i int, s *goquery.Selection) {
-		weather.Wind = s.Text()
+		if !strings.Contains(s.Text(), "↑") && !strings.Contains(s.Text(), "←") {
+			wind = s.Text()
+		} else {
+			doc.Find("body > pre > span:nth-child(7)").Each(func(i int, s *goquery.Selection) {
+				wind = s.Text()
+			})
+		}
 	})
+	return wind
 }
 
 func toJSON(weather model.Weather) []byte {
