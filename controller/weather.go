@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
 	"github.com/robertoduessmann/weather-api/model"
+	"github.com/robertoduessmann/weather-api/util"
 )
+
+var temperatureTags = []string{"body > pre > span:nth-child(3)", "body > pre > span:nth-child(2)"}
+var windTags = []string{"body > pre > span:nth-child(6)", "body > pre > span:nth-child(7)"}
 
 func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 
@@ -44,36 +47,8 @@ func parse(resp *http.Response, weather *model.Weather) {
 		log.Fatal(err)
 	}
 
-	weather.Temperature = parseTemperature(doc) + " °C"
-	weather.Wind = parseWind(doc) + " km/h"
-}
-
-func parseTemperature(doc *goquery.Document) string {
-	var temperature string
-	doc.Find("body > pre > span:nth-child(3)").Each(func(i int, s *goquery.Selection) {
-		if !strings.Contains(s.Text(), "_ - _") {
-			temperature = s.Text()
-		} else {
-			doc.Find("body > pre > span:nth-child(2)").Each(func(i int, s *goquery.Selection) {
-				temperature = s.Text()
-			})
-		}
-	})
-	return temperature
-}
-
-func parseWind(doc *goquery.Document) string {
-	var wind string
-	doc.Find("body > pre > span:nth-child(6)").Each(func(i int, s *goquery.Selection) {
-		if !strings.Contains(s.Text(), "↑") && !strings.Contains(s.Text(), "←") {
-			wind = s.Text()
-		} else {
-			doc.Find("body > pre > span:nth-child(7)").Each(func(i int, s *goquery.Selection) {
-				wind = s.Text()
-			})
-		}
-	})
-	return wind
+	weather.Temperature = util.Parse(doc, temperatureTags) + " °C"
+	weather.Wind = util.Parse(doc, windTags) + " km/h"
 }
 
 func toJSON(weather model.Weather) []byte {
