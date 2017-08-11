@@ -27,5 +27,5 @@ curl http://localhost:3000/weather/Curitiba
 ```
 #### Response
 ```sh
-{"temperature":"17","wind":"4"}
+{"temperature":"14 °C","wind":"6 km/h"}
 ```
