@@ -14,6 +14,7 @@ import (
 
 var temperatureTags = []string{"body > pre > span:nth-child(3)", "body > pre > span:nth-child(2)"}
 var windTags = []string{"body > pre > span:nth-child(6)", "body > pre > span:nth-child(7)"}
+var descriptionTags = []string{"body > pre"}
 
 func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 
@@ -46,7 +47,7 @@ func parse(resp *http.Response, weather *model.Weather) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	weather.Description = util.Parse(doc, descriptionTags)
 	weather.Temperature = util.Parse(doc, temperatureTags) + " °C"
 	weather.Wind = util.Parse(doc, windTags) + " km/h"
 }
