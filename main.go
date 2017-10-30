@@ -4,8 +4,8 @@ import (
 	"log"
 	"net/http"
 
-	"weather-api/config"
-	"weather-api/controller"
+	"github.com/robertoduessmann/weather-api/config"
+	"github.com/robertoduessmann/weather-api/controller"
 
 	"github.com/gorilla/mux"
 )

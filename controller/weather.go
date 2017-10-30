@@ -6,8 +6,8 @@ import (
 	"log"
 	"net/http"
 
-	"weather-api/model"
-	"weather-api/util"
+	"github.com/robertoduessmann/weather-api/model"
+	"github.com/robertoduessmann/weather-api/util"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
