@@ -29,5 +29,21 @@ curl http://localhost:3000/weather/Curitiba
 ```
 #### Response
 ```sh
-{"temperature":"14 °C","wind":"6 km/h"}
+{  
+   temperature:"24 °C",
+   wind:"9 km/h",
+   description:"Sunny",
+   forecast:[  
+      {  
+         day:1,
+         temperature:"28 °C",
+         wind:"2 km/h"
+      },
+      {  
+         day:2,
+         temperature:"24 °C",
+         wind:"9 km/h"
+      }
+   ]
+}
 ```
