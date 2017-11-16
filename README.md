@@ -28,21 +28,21 @@ curl http://localhost:3000/weather/{city}
 curl http://localhost:3000/weather/Curitiba
 ```
 #### Response
-```sh
+```json
 {  
-   temperature:"24 °C",
-   wind:"9 km/h",
-   description:"Sunny",
-   forecast:[  
+   "temperature":"29 °C",
+   "wind":"20 km/h",
+   "description":"Partly cloudy",
+   "forecast":[  
       {  
-         day:1,
-         temperature:"28 °C",
-         wind:"2 km/h"
+         "day":1,
+         "temperature":"27 °C",
+         "wind":"12 km/h"
       },
       {  
-         day:2,
-         temperature:"24 °C",
-         wind:"9 km/h"
+         "day":2,
+         "temperature":"22 °C",
+         "wind":"8 km/h"
       }
    ]
 }
