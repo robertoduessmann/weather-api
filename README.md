@@ -7,7 +7,6 @@
 > A REST API to check the current weather.
 
 > https://goweather.herokuapp.com/weather/Curitiba<br />
-https://goweather.herokuapp.com/weather/SaoPaulo<br />
 https://goweather.herokuapp.com/weather/{city}
 
 ## Build
