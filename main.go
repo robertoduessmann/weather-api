@@ -4,9 +4,10 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	"github.com/robertoduessmann/weather-api/config"
 	"github.com/robertoduessmann/weather-api/controller"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
