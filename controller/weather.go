@@ -9,7 +9,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
 	"github.com/robertoduessmann/weather-api/model"
-	"github.com/robertoduessmann/weather-api/util"
+	"github.com/robertoduessmann/weather-api/parser"
 )
 
 var temperatureTags = []string{"body > pre > span:nth-child(3)", "body > pre > span:nth-child(2)"}
@@ -51,13 +51,13 @@ func parse(resp *http.Response, weather *model.Weather) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	weather.Description = util.Parse(doc, descriptionTags)
-	weather.Temperature = util.Parse(doc, temperatureTags) + " °C"
-	weather.Wind = util.Parse(doc, windTags) + " km/h"
+	weather.Description = parser.Parse(doc, descriptionTags)
+	weather.Temperature = parser.Parse(doc, temperatureTags) + " °C"
+	weather.Wind = parser.Parse(doc, windTags) + " km/h"
 	for i := range weather.Forecast {
 		weather.Forecast[i].Day = i + 1
-		weather.Forecast[i].Temperature = util.Parse(doc, temperatureForecastTags[i]) + " °C"
-		weather.Forecast[i].Wind = util.Parse(doc, windForecastTags[i]) + " km/h"
+		weather.Forecast[i].Temperature = parser.Parse(doc, temperatureForecastTags[i]) + " °C"
+		weather.Forecast[i].Wind = parser.Parse(doc, windForecastTags[i]) + " km/h"
 	}
 }
 
