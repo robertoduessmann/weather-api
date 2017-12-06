@@ -7,6 +7,7 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+// Parse parses a document with goquery and returns a element
 func Parse(doc *goquery.Document, filters []string) (parsed string) {
 	for _, filter := range filters {
 		doc.Find(filter).Each(func(i int, s *goquery.Selection) {
