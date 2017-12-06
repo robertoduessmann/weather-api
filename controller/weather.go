@@ -20,6 +20,7 @@ var temperatureForecastTags = [2][]string{{"body > pre >span:nth-child(17)", "bo
 var windForecastTags = [2][]string{{"body > pre >span:nth-child(31)", "body > pre > span:nth-child(30)", "body > pre >span:nth-child(32)"},
 	{"body > pre >span:nth-child(67)", "body > pre > span:nth-child(66)"}}
 
+// CurrentWeather gets the current weather to show in JSON format
 func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 
 	var weather model.Weather
