@@ -1,0 +1,23 @@
+back to weather-tomorrow
+new endpoint
+
+
++func TomorrowWeather(w http.ResponseWriter, r *http.Request) {
++       var weather model.Weather
++
++       resp := getExternalWeather(getCity(r))
++       defer resp.Body.Close()
++
++       if resp.StatusCode == 200 {
++               parse(resp, &weather)
++       }
++
++       fmt.Fprintf(w, string(toJSON(weather)))
++}
+
+
+
+
+
+
++       weather.Path("/weather/{city}/tomorrow").Methods(http.MethodGet).HandlerFunc(controller.TomorrowWeather)
