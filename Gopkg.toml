@@ -36,3 +36,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/robertoduessmann/weather-api"
+
+[[constraint]]
+  name = "github.com/gorilla/handlers"
+  version = "1.3.0"
