@@ -26,6 +26,12 @@
   version = "v1.1"
 
 [[projects]]
+  name = "github.com/gorilla/handlers"
+  packages = ["."]
+  revision = "90663712d74cb411cbef281bc1e08c19d1a76145"
+  version = "v1.3.0"
+
+[[projects]]
   name = "github.com/gorilla/mux"
   packages = ["."]
   revision = "24fca303ac6da784b9e8269f724ddeb0b2eea5e7"
@@ -33,19 +39,16 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/robertoduessmann/weather-api"
-  packages = ["config","controller","model","util"]
-  revision = "f1eef3e27ee13bb42bd954b73400d295d00f70cd"
-
-[[projects]]
-  branch = "master"
   name = "golang.org/x/net"
-  packages = ["html","html/atom"]
+  packages = [
+    "html",
+    "html/atom"
+  ]
   revision = "7b572d500b0702f1ea30a47083ce2e1e5c61edba"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f41183b5cca55443aec4d5b7c38bfc627d74fa59ddc279fdf29d0d5e2bb53f87"
+  inputs-digest = "bd2a13ca698b90dd6b7169bb6ce86bb1b4d4b0cecce349cee2393727153790ab"
   solver-name = "gps-cdcl"
   solver-version = 1
