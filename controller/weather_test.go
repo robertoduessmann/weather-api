@@ -36,3 +36,17 @@ func TestCurrentWeather(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestNotFoundWeather(t *testing.T) {
+	router := new(mux.Router)
+	router.HandleFunc("/weather/{city}", CurrentWeather)
+
+	w := httptest.NewRecorder()
+	r, _ := http.NewRequest(http.MethodGet, "/weather/SaoPaulo", nil)
+	router.ServeHTTP(w, r)
+
+	if w.Code != http.StatusNotFound {
+		t.Errorf("Expected request to be NotFound.")
+		t.FailNow()
+	}
+}
