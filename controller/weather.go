@@ -84,7 +84,7 @@ func parse(resp *http.Response, weather *model.Weather) error {
 }
 
 func notFound(weather *model.Weather) bool {
-	if len(weather.Description) == 0 && len(weather.Description) == 0 && len(weather.Description) == 0 {
+	if len(weather.Description) == 0 {
 		return true
 	}
 
