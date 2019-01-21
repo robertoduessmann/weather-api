@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -24,15 +25,22 @@ var windForecastTags = [2][]string{{"body > pre >span:nth-child(31)", "body > pr
 func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 
 	var weather model.Weather
+	var err error
 
 	resp := getExternalWeather(getCity(r))
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
-		parse(resp, &weather)
+		err = parse(resp, &weather)
 	}
 
-	fmt.Fprintf(w, string(toJSON(weather)))
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, string(toJSON(model.ErrorMessage{Message: "NOT_FOUND"})))
+	} else {
+		fmt.Fprintf(w, string(toJSON(weather)))
+	}
+
 }
 
 func getCity(r *http.Request) string {
@@ -47,23 +55,44 @@ func getExternalWeather(city string) *http.Response {
 	return resp
 }
 
-func parse(resp *http.Response, weather *model.Weather) {
+func parse(resp *http.Response, weather *model.Weather) error {
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		log.Fatal(err)
 	}
 	weather.Description = parser.Parse(doc, descriptionTags)
-	weather.Temperature = parser.Parse(doc, temperatureTags) + " °C"
-	weather.Wind = parser.Parse(doc, windTags) + " km/h"
+	weather.Temperature = parser.Parse(doc, temperatureTags)
+	if len(weather.Temperature) > 0 {
+		weather.Temperature = weather.Temperature + " °C"
+	}
+
+	weather.Wind = parser.Parse(doc, windTags)
+	if len(weather.Wind) > 0 {
+		weather.Wind = weather.Wind + " km/h"
+	}
+	if notFound(weather) {
+		return errors.New("NOT_FOUND")
+	}
+
 	for i := range weather.Forecast {
 		weather.Forecast[i].Day = i + 1
 		weather.Forecast[i].Temperature = parser.Parse(doc, temperatureForecastTags[i]) + " °C"
 		weather.Forecast[i].Wind = parser.Parse(doc, windForecastTags[i]) + " km/h"
 	}
+
+	return nil
 }
 
-func toJSON(weather model.Weather) []byte {
-	respose, err := json.Marshal(weather)
+func notFound(weather *model.Weather) bool {
+	if len(weather.Description) == 0 {
+		return true
+	}
+
+	return false
+}
+
+func toJSON(object interface{}) []byte {
+	respose, err := json.Marshal(object)
 	if err != nil {
 		fmt.Println(err)
 	}

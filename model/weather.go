@@ -14,3 +14,8 @@ type Forecast struct {
 	Temperature string `json:"temperature"`
 	Wind        string `json:"wind"`
 }
+
+// ErrorMessage entity
+type ErrorMessage struct {
+	Message string `json:"message"`
+}
