@@ -34,10 +34,12 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 		err = parse(resp, &weather)
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, string(toJSON(model.ErrorMessage{Message: "NOT_FOUND"})))
 	} else {
+		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, string(toJSON(weather)))
 	}
 
