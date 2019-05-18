@@ -9,7 +9,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
-	"../model"
+	"github.com/robertoduessmann/weather-api/model"
 	"github.com/robertoduessmann/weather-api/parser"
 )
 
