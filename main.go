@@ -7,7 +7,7 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/robertoduessmann/weather-api/config"
-	"github.com/robertoduessmann/weather-api/controller"
+	"./controller"
 )
 
 func main() {
