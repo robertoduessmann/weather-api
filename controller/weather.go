@@ -14,7 +14,7 @@ import (
 )
 
 var temperatureTags = []string{"body > pre > span:nth-child(3)", "body > pre > span:nth-child(2)"}
-var windTags = []string{"body > pre > span:nth-child(4)", "body > pre > span:nth-child(5)"}
+var windTags = []string{"body > pre > span:nth-child(6)", "body > pre > span:nth-child(7)"}
 var descriptionTags = []string{"body > pre"}
 var temperatureForecastTags = [3][]string{{"body > pre >span:nth-child(17)", "body > pre > span:nth-child(16)"},
 	{"body > pre >span:nth-child(55)", "body > pre > span:nth-child(54)"},
