@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
@@ -79,7 +80,7 @@ func parse(resp *http.Response, weather *model.Weather) error {
 	}
 
 	for i := range weather.Forecast {
-		weather.Forecast[i].Day = i + 1
+		weather.Forecast[i].Day = strconv.Itoa(i + 1)
 		weather.Forecast[i].Temperature = parser.Parse(doc, temperatureForecastTags[i]) + " °C"
 		weather.Forecast[i].Wind = parser.Parse(doc, windForecastTags[i]) + " km/h"
 	}
