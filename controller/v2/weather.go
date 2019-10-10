@@ -16,31 +16,8 @@ const (
 )
 
 type wttrResponse struct {
-	CurrentCondition []struct {
-		FeelsLikeC      string `json:"FeelsLikeC"`
-		FeelsLikeF      string `json:"FeelsLikeF"`
-		Cloudcover      string `json:"cloudcover"`
-		Humidity        string `json:"humidity"`
-		ObservationTime string `json:"observation_time"`
-		PrecipMM        string `json:"precipMM"`
-		Pressure        string `json:"pressure"`
-		TempC           string `json:"temp_C"`
-		TempF           string `json:"temp_F"`
-		UvIndex         int    `json:"uvIndex"`
-		Visibility      string `json:"visibility"`
-		WeatherCode     string `json:"weatherCode"`
-		WeatherDesc     []struct {
-			Value string `json:"value"`
-		} `json:"weatherDesc"`
-		WeatherIconURL []struct {
-			Value string `json:"value"`
-		} `json:"weatherIconUrl"`
-		Winddir16Point string `json:"winddir16Point"`
-		WinddirDegree  string `json:"winddirDegree"`
-		WindspeedKmph  string `json:"windspeedKmph"`
-		WindspeedMiles string `json:"windspeedMiles"`
-	} `json:"current_condition"`
-	Request []struct {
+	CurrentCondition []currentCondition `json:"current_condition"`
+	Request          []struct {
 		Query string `json:"query"`
 		Type  string `json:"type"`
 	} `json:"request"`
@@ -106,6 +83,49 @@ type wttrResponse struct {
 	} `json:"weather"`
 }
 
+type currentCondition struct {
+	FeelsLikeC      string `json:"FeelsLikeC"`
+	FeelsLikeF      string `json:"FeelsLikeF"`
+	Cloudcover      string `json:"cloudcover"`
+	Humidity        string `json:"humidity"`
+	ObservationTime string `json:"observation_time"`
+	PrecipMM        string `json:"precipMM"`
+	Pressure        string `json:"pressure"`
+	TempC           string `json:"temp_C"`
+	TempF           string `json:"temp_F"`
+	UvIndex         int    `json:"uvIndex"`
+	Visibility      string `json:"visibility"`
+	WeatherCode     string `json:"weatherCode"`
+	WeatherDesc     []struct {
+		Value string `json:"value"`
+	} `json:"weatherDesc"`
+	WeatherIconURL []struct {
+		Value string `json:"value"`
+	} `json:"weatherIconUrl"`
+	Winddir16Point string `json:"winddir16Point"`
+	WinddirDegree  string `json:"winddirDegree"`
+	WindspeedKmph  string `json:"windspeedKmph"`
+	WindspeedMiles string `json:"windspeedMiles"`
+}
+
+func (cc currentCondition) Temp(unit string) string {
+	switch unit {
+	case "u":
+		return cc.TempF + " °F"
+	default:
+		return cc.TempC + " °C"
+	}
+}
+
+func (cc currentCondition) Windspeed(unit string) string {
+	switch unit {
+	case "u":
+		return cc.WindspeedMiles + " mph"
+	default:
+		return cc.WindspeedKmph + " km/h"
+	}
+}
+
 // CurrentWeather gets the current weather to show in JSON format
 //
 // This endpoint uses wttr API with JSON response under the hood to make it
@@ -143,13 +163,14 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var (
-		cc = wttr.CurrentCondition[0]
+		cc   = wttr.CurrentCondition[0]
+		unit = mux.Vars(r)["unit"]
 	)
 
 	response := model.Weather{
 		Description: cc.WeatherDesc[0].Value,
-		Temperature: cc.FeelsLikeC + " °C",
-		Wind:        cc.WindspeedKmph + " km/h",
+		Temperature: cc.Temp(unit),
+		Wind:        cc.Windspeed(unit),
 	}
 
 	for i, weather := range wttr.Weather {
