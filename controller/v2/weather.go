@@ -4,12 +4,16 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/robertoduessmann/weather-api/model"
 )
 
-const wttrURL = "http://wttr.in"
+const (
+	timeFormat = "2006-01-02"
+	wttrURL    = "http://wttr.in"
+)
 
 type wttrResponse struct {
 	CurrentCondition []struct {
@@ -146,23 +150,23 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 		Description: cc.WeatherDesc[0].Value,
 		Temperature: cc.FeelsLikeC + " °C",
 		Wind:        cc.WindspeedKmph + " km/h",
-		Forecast: [3]model.Forecast{
-			{
-				Day:         wttr.Weather[0].Date,
-				Temperature: wttr.Weather[0].MaxtempC + " °C",
-				Wind:        wttr.Weather[0].Hourly[0].WindspeedKmph + " km/h",
-			},
-			{
-				Day:         wttr.Weather[1].Date,
-				Temperature: wttr.Weather[1].MaxtempC + " °C",
-				Wind:        wttr.Weather[2].Hourly[0].WindspeedKmph + " km/h",
-			},
-			{
-				Day:         wttr.Weather[2].Date,
-				Temperature: wttr.Weather[2].MaxtempC + " °C",
-				Wind:        wttr.Weather[2].Hourly[0].WindspeedKmph + " km/h",
-			},
-		},
+	}
+
+	for i, weather := range wttr.Weather {
+		day, err := time.Parse(timeFormat, weather.Date)
+		if err != nil {
+			errJSON, _ := json.Marshal(model.ErrorMessage{Message: err.Error()})
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(errJSON)
+			return
+		}
+
+		response.Forecast[i] = model.Forecast{
+			Day:         day.Weekday().String(),
+			Temperature: weather.Hourly[0].TempC + " °C",
+			Wind:        weather.Hourly[0].WindspeedKmph + " km/h",
+		}
 	}
 
 	if err := json.NewEncoder(w).Encode(response); err != nil {
