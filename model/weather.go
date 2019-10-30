@@ -10,7 +10,7 @@ type Weather struct {
 
 // Forecast entity
 type Forecast struct {
-	Day         int    `json:"day"`
+	Day         string `json:"day"`
 	Temperature string `json:"temperature"`
 	Wind        string `json:"wind"`
 }
