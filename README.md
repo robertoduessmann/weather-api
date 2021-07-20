@@ -10,8 +10,10 @@
 > https://goweather.herokuapp.com/weather/Curitiba<br />
 https://goweather.herokuapp.com/weather/{city}
 
-## Build
+## Build locally (Mac users)
 ```sh
+brew install dep
+dep ensure
 go build
 ```
 ## Run
