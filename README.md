@@ -1,7 +1,7 @@
 # weather-api
 
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](/LICENSE)
-[![Build Status](https://travis-ci.org/robertoduessmann/weather-api.svg?branch=master)](https://travis-ci.org/robertoduessmann/weather-api)
+[![Build Status](https://travis-ci.com/robertoduessmann/weather-api.svg?branch=master)](https://travis-ci.com/robertoduessmann/weather-api)
 [![Go Report Card](https://goreportcard.com/badge/github.com/robertoduessmann/weather-api)](https://goreportcard.com/report/github.com/robertoduessmann/weather-api)
 [![GoDoc](https://godoc.org/github.com/robertoduessmann/weather-api?status.svg)](https://godoc.org/github.com/robertoduessmann/weather-api)
 
@@ -10,8 +10,10 @@
 > https://goweather.herokuapp.com/weather/Curitiba<br />
 https://goweather.herokuapp.com/weather/{city}
 
-## Build
+## Build locally (Mac users)
 ```sh
+brew install dep
+dep ensure
 go build
 ```
 ## Run
