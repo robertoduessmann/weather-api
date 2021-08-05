@@ -12,7 +12,7 @@ import (
 
 const (
 	timeFormat = "2006-01-02"
-	wttrURL    = "http://wttr.in"
+	wttrURL    = "https://wttr.in"
 )
 
 type wttrResponse struct {
