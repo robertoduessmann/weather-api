@@ -50,8 +50,8 @@ curl http://localhost:3000/weather/Curitiba
 }
 ```
 ## Web version
-A web client of the API is also available: https://reacttempo.netlify.app/ 
-Project can be found in https://github.com/GabrielCampos99/appTempo.
+A web client of the API is also available: https://reacttempo.netlify.app/ <br />
+The project can be found in https://github.com/GabrielCampos99/appTempo.
 
 ## License
 The MIT License ([MIT](https://github.com/robertoduessmann/weather-api/blob/master/LICENSE))
