@@ -12,3 +12,6 @@
 
 # dep vendor folder
 vendor
+
+# build app file
+weather-api
