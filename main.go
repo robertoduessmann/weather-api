@@ -12,9 +12,15 @@ import (
 )
 
 func main() {
+	log.Println("Starting application")
 
 	weather := mux.NewRouter()
-	weather.Path("/weather/{city}").Methods(http.MethodGet).HandlerFunc(controller.CurrentWeather)
+
+	log.Println("Creating routes")
+	weather.
+		Path("/weather/{city}").
+		Methods(http.MethodGet).
+		HandlerFunc(controller.CurrentWeather)
 
 	weather.
 		Path("/v2/weather/{city}").
@@ -27,8 +33,10 @@ func main() {
 		Methods(http.MethodGet).
 		HandlerFunc(v2.CurrentWeather)
 
-	if err := http.ListenAndServe(":"+config.Get().Port, handlers.CORS()(weather)); err != nil {
+	log.Println("Created routes")
+	port := config.Get().Port
+	log.Println("Initialize server on port: " + port)
+	if err := http.ListenAndServe(":"+port, handlers.CORS()(weather)); err != nil {
 		log.Fatal(err)
 	}
-
 }

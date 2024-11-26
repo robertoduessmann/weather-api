@@ -26,11 +26,11 @@ var windForecastTags = [3][]string{{"body > pre >span:nth-child(31)", "body > pr
 
 // CurrentWeather gets the current weather to show in JSON format
 func CurrentWeather(w http.ResponseWriter, r *http.Request) {
-
 	var weather model.Weather
 	var err error
 
-	resp := getExternalWeather(getCity(r))
+	city := getCity(r)
+	resp := getExternalWeather(city)
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
