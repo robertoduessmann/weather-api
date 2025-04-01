@@ -15,60 +15,58 @@ const (
 	wttrURL    = "https://wttr.in"
 )
 
-// CurrentWeather gets the current weather to show in JSON format
-//
-// This endpoint uses wttr API with JSON response under the hood to make it
-// easier to handle with units and formats
+func writeError(w http.ResponseWriter, status int, message string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(model.ErrorMessage{Message: message})
+}
+
 func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 	city := mux.Vars(r)["city"]
+	unit := mux.Vars(r)["unit"]
 	uri := fmt.Sprintf("%s/%s?format=j1", wttrURL, city)
-	res, err := http.Get(uri)
 
+	res, err := http.Get(uri)
 	if err != nil {
-		errJSON, _ := json.Marshal(model.ErrorMessage{Message: err.Error()})
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(errJSON)
+		writeError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	defer res.Body.Close()
 
 	if res.StatusCode != http.StatusOK {
-		errJSON, _ := json.Marshal(model.ErrorMessage{Message: "NOT_FOUND"})
-		w.WriteHeader(http.StatusNotFound)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(errJSON)
+		writeError(w, http.StatusNotFound, "NOT_FOUND")
 		return
 	}
-
-	defer res.Body.Close()
 
 	var wttr wttrResponse
 	if err := json.NewDecoder(res.Body).Decode(&wttr); err != nil {
-		errJSON, _ := json.Marshal(model.ErrorMessage{Message: err.Error()})
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(errJSON)
+		writeError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	var (
-		cc   = wttr.CurrentCondition[0]
-		unit = mux.Vars(r)["unit"]
-	)
+	// Safety checks
+	if len(wttr.CurrentCondition) == 0 || len(wttr.CurrentCondition[0].WeatherDesc) == 0 {
+		writeError(w, http.StatusInternalServerError, "Unexpected API response")
+		return
+	}
 
+	cc := wttr.CurrentCondition[0]
 	response := model.Weather{
 		Description: cc.WeatherDesc[0].Value,
 		Temperature: cc.Temp(unit),
 		Wind:        cc.Windspeed(unit),
+		Forecast:    make([]model.Forecast, len(wttr.Weather)),
 	}
 
 	for i, weather := range wttr.Weather {
+		if len(weather.Hourly) == 0 {
+			writeError(w, http.StatusInternalServerError, "Incomplete forecast data")
+			return
+		}
+
 		day, err := time.Parse(timeFormat, weather.Date)
 		if err != nil {
-			errJSON, _ := json.Marshal(model.ErrorMessage{Message: err.Error()})
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Header().Set("Content-Type", "application/json")
-			w.Write(errJSON)
+			writeError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
@@ -79,11 +77,8 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(response); err != nil {
-		errJSON, _ := json.Marshal(model.ErrorMessage{Message: err.Error()})
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(errJSON)
-		return
+		writeError(w, http.StatusInternalServerError, err.Error())
 	}
 }
