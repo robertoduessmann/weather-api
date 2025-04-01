@@ -31,6 +31,12 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 
 	city := getCity(r)
 	resp := getExternalWeather(city)
+	if resp == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, string(toJSON(model.ErrorMessage{Message: "NOT_FOUND"})))
+		return
+	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode == 200 {
