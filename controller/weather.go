@@ -70,20 +70,28 @@ func getExternalWeather(city string) *http.Response {
 }
 
 func parse(resp *http.Response, weather *model.Weather) error {
+	if resp == nil {
+		return errors.New("response is nil")
+	}
+	defer resp.Body.Close()
+
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("Error parsing response body: %v", err)
+		return err
 	}
+
 	weather.Description = parser.Parse(doc, descriptionTags)
 	weather.Temperature = parser.Parse(doc, temperatureTags)
 	if len(weather.Temperature) > 0 {
-		weather.Temperature = weather.Temperature + " °C"
+		weather.Temperature += " °C"
 	}
 
 	weather.Wind = parser.Parse(doc, windTags)
 	if len(weather.Wind) > 0 {
-		weather.Wind = weather.Wind + " km/h"
+		weather.Wind += " km/h"
 	}
+
 	if notFound(weather) {
 		return errors.New("NOT_FOUND")
 	}
