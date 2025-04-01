@@ -19,16 +19,12 @@ import (
 var temperatureTags = []string{"body > pre > span:nth-child(3)", "body > pre > span:nth-child(2)"}
 var windTags = []string{"body > pre > span:nth-child(6)", "body > pre > span:nth-child(7)"}
 var descriptionTags = []string{"body > pre"}
-var temperatureForecastTags = [3][]string{
-	{"body > pre >span:nth-child(17)", "body > pre > span:nth-child(16)"},
+var temperatureForecastTags = [3][]string{{"body > pre >span:nth-child(17)", "body > pre > span:nth-child(16)"},
 	{"body > pre >span:nth-child(55)", "body > pre > span:nth-child(54)"},
-	{"body > pre >span:nth-child(91)", "body > pre > span:nth-child(90)"},
-}
-var windForecastTags = [3][]string{
-	{"body > pre >span:nth-child(31)", "body > pre > span:nth-child(30)", "body > pre >span:nth-child(32)"},
+	{"body > pre >span:nth-child(91)", "body > pre > span:nth-child(90)"}}
+var windForecastTags = [3][]string{{"body > pre >span:nth-child(31)", "body > pre > span:nth-child(30)", "body > pre >span:nth-child(32)"},
 	{"body > pre >span:nth-child(68)", "body > pre > span:nth-child(67)", "body > pre > span:nth-child(69)"},
-	{"body > pre >span:nth-child(105)", "body > pre > span:nth-child(104)", "body > pre > span:nth-child(106)"},
-}
+	{"body > pre >span:nth-child(105)", "body > pre > span:nth-child(104)", "body > pre > span:nth-child(106)"}}
 
 // CurrentWeather gets the current weather to show in JSON format
 func CurrentWeather(w http.ResponseWriter, r *http.Request) {
