@@ -35,7 +35,7 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 	cacheKey := fmt.Sprintf("html-%s", city)
 
 	cacheManager := cache.NewCacheManager()
-	weatherCache := cacheManager.NewCache("weather-html", 10*time.Minute)
+	weatherCache := cacheManager.NewCache("weather-html", 2*time.Minute)
 
 	if cached, found := weatherCache.Get(cacheKey); found {
 		log.Printf("[CACHE HIT] key=%s", cacheKey)
