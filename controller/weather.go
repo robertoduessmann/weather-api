@@ -7,9 +7,11 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gorilla/mux"
+	"github.com/robertoduessmann/weather-api/cache"
 	"github.com/robertoduessmann/weather-api/model"
 	"github.com/robertoduessmann/weather-api/parser"
 )
@@ -30,6 +32,19 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	city := getCity(r)
+	cacheKey := fmt.Sprintf("html-%s", city)
+
+	cacheManager := cache.NewCacheManager()
+	weatherCache := cacheManager.NewCache("weather-html", 10*time.Minute)
+
+	if cached, found := weatherCache.Get(cacheKey); found {
+		log.Printf("[CACHE HIT] key=%s", cacheKey)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(cached.([]byte))
+		return
+	}
+
+	log.Printf("[CACHE MISS] key=%s", cacheKey)
 	resp := getExternalWeather(city)
 	if resp == nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -49,9 +64,10 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, string(toJSON(model.ErrorMessage{Message: "NOT_FOUND"})))
 	} else {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, string(toJSON(weather)))
+		result := toJSON(weather)
+		weatherCache.Put(cacheKey, result)
+		w.Write(result)
 	}
-
 }
 
 func getCity(r *http.Request) string {
@@ -66,7 +82,6 @@ func getExternalWeather(city string) *http.Response {
 		return nil
 	}
 
-	// Optional: check for non-200 status codes and log them
 	if resp.StatusCode != http.StatusOK {
 		log.Printf("Warning: weather API for %s returned status %d", city, resp.StatusCode)
 		resp.Body.Close()
@@ -112,17 +127,13 @@ func parse(resp *http.Response, weather *model.Weather) error {
 }
 
 func notFound(weather *model.Weather) bool {
-	if len(weather.Description) == 0 {
-		return true
-	}
-
-	return false
+	return len(weather.Description) == 0
 }
 
 func toJSON(object interface{}) []byte {
-	respose, err := json.Marshal(object)
+	response, err := json.Marshal(object)
 	if err != nil {
 		fmt.Println(err)
 	}
-	return respose
+	return response
 }
