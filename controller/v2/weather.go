@@ -97,7 +97,7 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	weatherCache.Set(cacheKey, encoded)
+	weatherCache.Put(cacheKey, encoded)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(encoded)
