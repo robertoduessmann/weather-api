@@ -53,9 +53,18 @@ func getCity(r *http.Request) string {
 }
 
 func getExternalWeather(city string) *http.Response {
-	resp, err := http.Get("https://wttr.in/" + city + "?m")
+	url := "https://wttr.in/" + city + "?m"
+	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatal("Cannot open url: ", err)
+		log.Printf("Warning: failed to fetch weather for %s: %v", city, err)
+		return nil
+	}
+
+	// Optional: check for non-200 status codes and log them
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("Warning: weather API for %s returned status %d", city, resp.StatusCode)
+		resp.Body.Close()
+		return nil
 	}
 	return resp
 }
