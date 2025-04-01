@@ -6,8 +6,8 @@
 
 > A REST API to check the current weather.
 
-> https://goweather.herokuapp.com/weather/Curitiba<br />
-https://goweather.herokuapp.com/weather/{city}
+> http://goweather.xyz/weather/Berlin<br />
+http://goweather.xyz/weather/{city}
 
 ## Build locally (Mac users)
 ```sh
