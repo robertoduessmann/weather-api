@@ -68,10 +68,11 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 		Description: cc.WeatherDesc[0].Value,
 		Temperature: cc.Temp(unit),
 		Wind:        cc.Windspeed(unit),
-		Forecast:    make([]model.Forecast, len(wttr.Weather)),
+		Forecast:    [3]model.Forecast{},
 	}
 
-	for i, weather := range wttr.Weather {
+	for i := 0; i < len(wttr.Weather) && i < 3; i++ {
+		weather := wttr.Weather[i]
 		if len(weather.Hourly) == 0 {
 			writeError(w, http.StatusInternalServerError, "Incomplete forecast data")
 			return
