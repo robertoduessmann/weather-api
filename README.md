@@ -43,12 +43,12 @@ curl http://localhost:3000/weather/Curitiba
   "description": "Partly cloudy",
   "forecast": [
     {
-      "day": 1,
+      "day": "1",
       "temperature": "27 °C",
       "wind": "12 km/h"
     },
     {
-      "day": 2,
+      "day": "2",
       "temperature": "22 °C",
       "wind": "8 km/h"
     }
