@@ -1,6 +1,6 @@
 module github.com/robertoduessmann/weather-api
 
-go 1.23
+go 1.23.0
 
 toolchain go1.23.2
 
@@ -15,5 +15,5 @@ require (
 	github.com/andybalholm/cascadia v1.3.2 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
-	golang.org/x/net v0.29.0 // indirect
+	golang.org/x/net v0.38.0 // indirect
 )
