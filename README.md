@@ -6,7 +6,7 @@
 
 > A REST API to check the current weather.
 
-> http://goweather.xyz/weather/Berlin<br /> > http://goweather.xyz/weather/{city}
+> https://goweather.xyz/v2/weather/Berlin<br /> > https://goweather.xyz/v2/weather/{city}
 
 ## Build locally (Mac users)
 
