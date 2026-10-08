@@ -2,6 +2,10 @@ package v2
 
 import "testing"
 
+// ============================================================
+// Current condition
+// ============================================================
+
 func TestCurrentConditionTemp(t *testing.T) {
 	t.Parallel()
 
@@ -42,7 +46,7 @@ func TestCurrentConditionTemp(t *testing.T) {
 		},
 	}
 
-	runTempTests(t, cc.Temp, tests)
+	runUnitTests(t, cc.Temp, tests, "Temp")
 }
 
 func TestCurrentConditionWindspeed(t *testing.T) {
@@ -85,8 +89,12 @@ func TestCurrentConditionWindspeed(t *testing.T) {
 		},
 	}
 
-	runWindspeedTests(t, cc.Windspeed, tests)
+	runUnitTests(t, cc.Windspeed, tests, "Windspeed")
 }
+
+// ============================================================
+// Hourly
+// ============================================================
 
 func TestHourlyTemp(t *testing.T) {
 	t.Parallel()
@@ -128,7 +136,7 @@ func TestHourlyTemp(t *testing.T) {
 		},
 	}
 
-	runTempTests(t, h.Temp, tests)
+	runUnitTests(t, h.Temp, tests, "Temp")
 }
 
 func TestHourlyWindspeed(t *testing.T) {
@@ -171,29 +179,30 @@ func TestHourlyWindspeed(t *testing.T) {
 		},
 	}
 
-	runWindspeedTests(t, h.Windspeed, tests)
+	runUnitTests(t, h.Windspeed, tests, "Windspeed")
 }
 
+// ============================================================
 // Helpers
+// ============================================================
 
-type tempFunc func(string) string
+type unitFunc func(string) string
 
-type windspeedFunc func(string) string
+type unitTest struct {
+	name     string
+	unit     string
+	expected string
+}
 
-func runTempTests(
+func runUnitTests(
 	t *testing.T,
-	fn tempFunc,
-	tests []struct {
-		name     string
-		unit     string
-		expected string
-	},
+	fn unitFunc,
+	tests []unitTest,
+	functionName string,
 ) {
 	t.Helper()
 
 	for _, tt := range tests {
-		tt := tt
-
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -201,43 +210,21 @@ func runTempTests(
 
 			if got != tt.expected {
 				t.Errorf(
-					"Temp(%q): expected %q, got %q",
+					"%s(%q) = %q; want %q",
+					functionName,
 					tt.unit,
-					tt.expected,
 					got,
+					tt.expected,
 				)
 			}
 		})
 	}
 }
+O que foi corrigido
+Removida a duplicação entre tempFunc e windspeedFunc.
+Removidos os dois helpers praticamente idênticos.
+Criado um único unitTest.
+Criado um único runUnitTests.
+Mantido o t.Parallel().
+Mantido o comportamento original dos testes.
 
-func runWindspeedTests(
-	t *testing.T,
-	fn windspeedFunc,
-	tests []struct {
-		name     string
-		unit     string
-		expected string
-	},
-) {
-	t.Helper()
-
-	for _, tt := range tests {
-		tt := tt
-
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			got := fn(tt.unit)
-
-			if got != tt.expected {
-				t.Errorf(
-					"Windspeed(%q): expected %q, got %q",
-					tt.unit,
-					tt.expected,
-					got,
-				)
-			}
-		})
-	}
-}
