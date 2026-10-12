@@ -26,6 +26,33 @@ var windForecastTags = [3][]string{{"body > pre >span:nth-child(31)", "body > pr
 	{"body > pre >span:nth-child(68)", "body > pre > span:nth-child(67)", "body > pre > span:nth-child(69)"},
 	{"body > pre >span:nth-child(105)", "body > pre > span:nth-child(104)", "body > pre > span:nth-child(106)"}}
 
+// WeatherFetcher abstracts fetching the external weather response so tests can inject a stub.
+type WeatherFetcher interface {
+	Fetch(city string) (*http.Response, error)
+}
+
+// HTTPWeatherFetcher is the production implementation using http.Get
+type HTTPWeatherFetcher struct{}
+
+func (HTTPWeatherFetcher) Fetch(city string) (*http.Response, error) {
+	url := "https://wttr.in/" + city + "?m"
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Printf("Warning: failed to fetch weather for %s: %v", city, err)
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		log.Printf("Warning: weather API for %s returned status %d", city, resp.StatusCode)
+		resp.Body.Close()
+		return nil, fmt.Errorf("status %d", resp.StatusCode)
+	}
+	return resp, nil
+}
+
+// package-level fetcher (override in tests)
+var weatherFetcher WeatherFetcher = HTTPWeatherFetcher{}
+
 // CurrentWeather gets the current weather to show in JSON format
 func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 	var weather model.Weather
@@ -45,8 +72,8 @@ func CurrentWeather(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("[CACHE MISS] key=%s", cacheKey)
-	resp := getExternalWeather(city)
-	if resp == nil {
+	resp, ferr := weatherFetcher.Fetch(city)
+	if ferr != nil || resp == nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, string(toJSON(model.ErrorMessage{Message: "NOT_FOUND"})))
@@ -74,6 +101,7 @@ func getCity(r *http.Request) string {
 	return mux.Vars(r)["city"]
 }
 
+// getExternalWeather kept for compatibility but not used by production fetcher.
 func getExternalWeather(city string) *http.Response {
 	url := "https://wttr.in/" + city + "?m"
 	resp, err := http.Get(url)
@@ -94,8 +122,8 @@ func parse(resp *http.Response, weather *model.Weather) error {
 	if resp == nil {
 		return errors.New("response is nil")
 	}
-	defer resp.Body.Close()
 
+	// parsing should NOT close the response body; the caller is responsible for that
 	doc, err := goquery.NewDocumentFromReader(resp.Body)
 	if err != nil {
 		log.Printf("Error parsing response body: %v", err)
