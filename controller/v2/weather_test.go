@@ -1,5 +1,7 @@
+from pathlib import Path
 
-package main
+out = Path("/mnt/data/weather_test.go")
+code = r'''package main
 
 import "testing"
 
@@ -16,31 +18,11 @@ func TestCurrentConditionTemp(t *testing.T) {
 	}
 
 	tests := []unitTest{
-		{
-			name:     "metric",
-			unit:     "m",
-			expected: "17 °C",
-		},
-		{
-			name:     "USCS",
-			unit:     "u",
-			expected: "62 °F",
-		},
-		{
-			name:     "unknown unit defaults to metric",
-			unit:     "unknown",
-			expected: "17 °C",
-		},
-		{
-			name:     "empty unit defaults to metric",
-			unit:     "",
-			expected: "17 °C",
-		},
-		{
-			name:     "whitespace unit defaults to metric",
-			unit:     " ",
-			expected: "17 °C",
-		},
+		{name: "metric (SI)", unit: "m", expected: "17 °C"},
+		{name: "USCS", unit: "u", expected: "62 °F"},
+		{name: "unknown unit defaults to metric", unit: "unknown", expected: "17 °C"},
+		{name: "empty unit defaults to metric", unit: "", expected: "17 °C"},
+		{name: "whitespace unit defaults to metric", unit: " ", expected: "17 °C"},
 	}
 
 	runUnitTests(t, cc.Temp, tests, "Temp")
@@ -55,31 +37,11 @@ func TestCurrentConditionWindspeed(t *testing.T) {
 	}
 
 	tests := []unitTest{
-		{
-			name:     "metric",
-			unit:     "m",
-			expected: "19 km/h",
-		},
-		{
-			name:     "USCS",
-			unit:     "u",
-			expected: "11 mph",
-		},
-		{
-			name:     "unknown unit defaults to metric",
-			unit:     "unknown",
-			expected: "19 km/h",
-		},
-		{
-			name:     "empty unit defaults to metric",
-			unit:     "",
-			expected: "19 km/h",
-		},
-		{
-			name:     "whitespace unit defaults to metric",
-			unit:     " ",
-			expected: "19 km/h",
-		},
+		{name: "metric (SI)", unit: "m", expected: "19 km/h"},
+		{name: "USCS", unit: "u", expected: "11 mph"},
+		{name: "unknown unit defaults to metric", unit: "unknown", expected: "19 km/h"},
+		{name: "empty unit defaults to metric", unit: "", expected: "19 km/h"},
+		{name: "whitespace unit defaults to metric", unit: " ", expected: "19 km/h"},
 	}
 
 	runUnitTests(t, cc.Windspeed, tests, "Windspeed")
@@ -98,31 +60,11 @@ func TestHourlyTemp(t *testing.T) {
 	}
 
 	tests := []unitTest{
-		{
-			name:     "metric",
-			unit:     "m",
-			expected: "30 °C",
-		},
-		{
-			name:     "USCS",
-			unit:     "u",
-			expected: "86 °F",
-		},
-		{
-			name:     "unknown unit defaults to metric",
-			unit:     "unknown",
-			expected: "30 °C",
-		},
-		{
-			name:     "empty unit defaults to metric",
-			unit:     "",
-			expected: "30 °C",
-		},
-		{
-			name:     "whitespace unit defaults to metric",
-			unit:     " ",
-			expected: "30 °C",
-		},
+		{name: "metric (SI)", unit: "m", expected: "30 °C"},
+		{name: "USCS", unit: "u", expected: "86 °F"},
+		{name: "unknown unit defaults to metric", unit: "unknown", expected: "30 °C"},
+		{name: "empty unit defaults to metric", unit: "", expected: "30 °C"},
+		{name: "whitespace unit defaults to metric", unit: " ", expected: "30 °C"},
 	}
 
 	runUnitTests(t, h.Temp, tests, "Temp")
@@ -137,31 +79,11 @@ func TestHourlyWindspeed(t *testing.T) {
 	}
 
 	tests := []unitTest{
-		{
-			name:     "metric",
-			unit:     "m",
-			expected: "25 km/h",
-		},
-		{
-			name:     "USCS",
-			unit:     "u",
-			expected: "15 mph",
-		},
-		{
-			name:     "unknown unit defaults to metric",
-			unit:     "unknown",
-			expected: "25 km/h",
-		},
-		{
-			name:     "empty unit defaults to metric",
-			unit:     "",
-			expected: "25 km/h",
-		},
-		{
-			name:     "whitespace unit defaults to metric",
-			unit:     " ",
-			expected: "25 km/h",
-		},
+		{name: "metric (SI)", unit: "m", expected: "25 km/h"},
+		{name: "USCS", unit: "u", expected: "15 mph"},
+		{name: "unknown unit defaults to metric", unit: "unknown", expected: "25 km/h"},
+		{name: "empty unit defaults to metric", unit: "", expected: "25 km/h"},
+		{name: "whitespace unit defaults to metric", unit: " ", expected: "25 km/h"},
 	}
 
 	runUnitTests(t, h.Windspeed, tests, "Windspeed")
@@ -179,22 +101,15 @@ type unitTest struct {
 	expected string
 }
 
-func runUnitTests(
-	t *testing.T,
-	fn unitFunc,
-	tests []unitTest,
-	functionName string,
-) {
+func runUnitTests(t *testing.T, fn unitFunc, tests []unitTest, functionName string) {
 	t.Helper()
 
 	for _, tt := range tests {
-		tt := tt
-
+		tt := tt // Mantém o caso correto capturado pelo subteste.
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			got := fn(tt.unit)
-
 			if got != tt.expected {
 				t.Errorf(
 					"%s(%q) = %q; want %q",
@@ -207,3 +122,6 @@ func runUnitTests(
 		})
 	}
 }
+'''
+out.write_text(code, encoding="utf-8")
+print(f"Arquivo criado: {out}")
