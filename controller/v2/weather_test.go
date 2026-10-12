@@ -1,4 +1,5 @@
-package v2
+
+package main
 
 import "testing"
 
@@ -14,11 +15,7 @@ func TestCurrentConditionTemp(t *testing.T) {
 		TempF: "62",
 	}
 
-	tests := []struct {
-		name     string
-		unit     string
-		expected string
-	}{
+	tests := []unitTest{
 		{
 			name:     "metric",
 			unit:     "m",
@@ -57,11 +54,7 @@ func TestCurrentConditionWindspeed(t *testing.T) {
 		WindspeedMiles: "11",
 	}
 
-	tests := []struct {
-		name     string
-		unit     string
-		expected string
-	}{
+	tests := []unitTest{
 		{
 			name:     "metric",
 			unit:     "m",
@@ -104,11 +97,7 @@ func TestHourlyTemp(t *testing.T) {
 		TempF: "86",
 	}
 
-	tests := []struct {
-		name     string
-		unit     string
-		expected string
-	}{
+	tests := []unitTest{
 		{
 			name:     "metric",
 			unit:     "m",
@@ -147,11 +136,7 @@ func TestHourlyWindspeed(t *testing.T) {
 		WindspeedMiles: "15",
 	}
 
-	tests := []struct {
-		name     string
-		unit     string
-		expected string
-	}{
+	tests := []unitTest{
 		{
 			name:     "metric",
 			unit:     "m",
@@ -203,6 +188,8 @@ func runUnitTests(
 	t.Helper()
 
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
@@ -220,11 +207,3 @@ func runUnitTests(
 		})
 	}
 }
-O que foi corrigido
-Removida a duplicação entre tempFunc e windspeedFunc.
-Removidos os dois helpers praticamente idênticos.
-Criado um único unitTest.
-Criado um único runUnitTests.
-Mantido o t.Parallel().
-Mantido o comportamento original dos testes.
-
