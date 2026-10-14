@@ -1,6 +1,15 @@
+```go
 package main
 
 import "testing"
+
+type unitFunc func(string) string
+
+type unitTest struct {
+	name     string
+	unit     string
+	expected string
+}
 
 func TestCurrentConditionTemp(t *testing.T) {
 	t.Parallel()
@@ -78,26 +87,31 @@ func TestHourlyWindspeed(t *testing.T) {
 	runUnitTests(t, h.Windspeed, tests, "Windspeed")
 }
 
-type unitFunc func(string) string
-
-type unitTest struct {
-	name     string
-	unit     string
-	expected string
-}
-
-func runUnitTests(t *testing.T, fn unitFunc, tests []unitTest, functionName string) {
+func runUnitTests(
+	t *testing.T,
+	fn unitFunc,
+	tests []unitTest,
+	functionName string,
+) {
 	t.Helper()
 
 	for _, tt := range tests {
+		tt := tt
+
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
 			got := fn(tt.unit)
 			if got != tt.expected {
-				t.Errorf("%s(%q) = %q; want %q",
-					functionName, tt.unit, got, tt.expected)
+				t.Errorf(
+					"%s(%q) = %q; want %q",
+					functionName,
+					tt.unit,
+					got,
+					tt.expected,
+				)
 			}
 		})
 	}
 }
+```
