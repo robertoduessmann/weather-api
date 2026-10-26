@@ -1,17 +1,125 @@
-# Binaries for programs and plugins
+
+# ==================================================
+# Go - arquivos binários compilados
+# ==================================================
 *.exe
+*.exe~
 *.dll
 *.so
 *.dylib
-
-# Test binary, build with `go test -c`
+*.a
+*.o
+*.obj
 *.test
-
-# Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 
-# dep vendor folder
-vendor
+# Binários gerados pelo projeto
+/weather-api
+/weather-api.exe
+/bin/
+/build/
+/dist/
 
-# build app file
-weather-api
+# ==================================================
+# Go - dependências e ferramentas
+# ==================================================
+vendor/
+
+# ==================================================
+# Testes e cobertura
+# ==================================================
+coverage.out
+coverage.txt
+coverage.html
+coverage.xml
+coverage.json
+cover.out
+coverprofile.out
+*.coverprofile
+*.test
+
+# ==================================================
+# Profiling e diagnósticos
+# ==================================================
+*.prof
+*.pprof
+*.cpuprofile
+*.memprofile
+*.heapprofile
+*.trace
+*.cover
+
+# ==================================================
+# Variáveis de ambiente e segredos
+# ==================================================
+.env
+.env.*
+!.env.example
+!.env.*.example
+
+# Arquivos de credenciais e chaves privadas
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+secrets.yaml
+secrets.yml
+secrets.json
+credentials.json
+
+# ==================================================
+# Logs
+# ==================================================
+*.log
+logs/
+log/
+
+# ==================================================
+# Arquivos temporários
+# ==================================================
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.orig
+*~
+.temp/
+tmp/
+temp/
+
+# ==================================================
+# Sistemas operacionais
+# ==================================================
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Desktop.ini
+
+# ==================================================
+# IDEs e editores
+# ==================================================
+.vscode/
+.idea/
+*.iml
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+.project
+.classpath
+.settings/
+
+# ==================================================
+# Go - arquivos gerados por ferramentas
+# ==================================================
+go.work.sum
+
+# ==================================================
+# CI/CD e ferramentas locais
+# ==================================================
+coverage/
+.nyc_output/
+.cache/
+.pytest_cache/
